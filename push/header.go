@@ -25,7 +25,21 @@ type Headers struct {
 
 	// Topic for certificates with multiple topics.
 	Topic string
+
+	// PushType is The type of the notification.
+	// Required when delivering notifications to devices running iOS 13 and later, or watchOS 6 and later.
+	PushType APNsPushType
 }
+
+// APNsPushType is The type of the APNs notification.
+type APNsPushType string
+
+const (
+	// APNsPushTypeAlert is The type of the APNs notification `alert`.
+	APNsPushTypeAlert APNsPushType = "alert"
+	// APNsPushTypeBackground is The type of the APNs notification `background`.
+	APNsPushTypeBackground APNsPushType = "background"
+)
 
 // set headers for an HTTP request
 func (h *Headers) set(reqHeader http.Header) {
@@ -54,4 +68,7 @@ func (h *Headers) set(reqHeader http.Header) {
 		reqHeader.Set("apns-topic", h.Topic)
 	}
 
+	if h.PushType != "" {
+		reqHeader.Set("apns-push-type", string(h.PushType))
+	}
 }
